@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shurdington NDP Group. TEST PAGE</title>
+
+    <style>
+        /* Reset & base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #;
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header / Nav */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo { font-size: 1.5rem; font-weight: bold; color: #28a745; }
+
+        /* Mobile menu toggle (hidden on wide screens) */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #333; transition: color 0.3s ease; font-weight: 500; cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { color: #28a745; }
+
+        main { padding-top: 100px; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Hero */
+        .hero { text-align: center; padding: 4rem 0; color: white; position: relative; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; animation: fadeInUp 1s ease; }
+        .hero p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; animation: fadeInUp 1s ease 0.2s both; }
+        .cta-button { display: inline-block; padding: 12px 30px; background: rgba(255,255,255,0.2); border: 2px solid white; color: white; text-decoration: none; border-radius: 50px; transition: all 0.3s ease; font-weight: 600; animation: fadeInUp 1s ease 0.4s both; cursor: pointer; }
+        .cta-button:hover { background: white; color: #28a745 transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        .content-section { background: white; margin: 4rem 0; padding: 4rem 0; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+
+        /* Decorative backgrounds (kept) */
+        .hero { background: linear-gradient(rgba(40,167,69,0.8), rgba(30,126,52,0.8)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="construction" patternUnits="userSpaceOnUse" width="200" height="200"><rect width="200" height="200" fill="%23f0f0f0"/><rect x="20" y="20" width="60" height="40" fill="%23d4d4d4" rx="2"/><rect x="90" y="30" width="80" height="60" fill="%23c0c0c0" rx="3"/><rect x="30" y="70" width="50" height="30" fill="%23b8b8b8" rx="2"/><rect x="120" y="100" width="40" height="80" fill="%23d0d0d0" rx="2"/><circle cx="160" cy="40" r="8" fill="%23ffd700"/><polygon points="40,150 70,120 100,150" fill="%23ff6b35"/></pattern></defs><rect width="1200" height="600" fill="url(%23construction)"/></svg>') center/cover; }
+
+        .construction-bg { background: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><rect width="800" height="400" fill="%23f8f9fa"/><rect x="50" y="150" width="120" height="80" fill="%23e9ecef" stroke="%23dee2e6" stroke-width="2"/><rect x="200" y="100" width="100" height="130" fill="%23f8f9fa" stroke="%23dee2e6" stroke-width="2"/><rect x="350" y="120" width="140" height="110" fill="%23e9ecef" stroke="%23dee2e6" stroke-width="2"/><rect x="520" y="80" width="90" height="150" fill="%23f8f9fa" stroke="%23dee2e6" stroke-width="2"/><rect x="650" y="140" width="110" height="90" fill="%23e9ecef" stroke="%23dee2e6" stroke-width="2"/><circle cx="400" cy="50" r="15" fill="%23ffd700"/><polygon points="100,50 130,20 160,50" fill="%23ff6b35"/><rect x="680" y="40" width="80" height="20" fill="%2328a745"/></svg>') right/contain no-repeat; }
+
+        /* ✅ Grid layout */
+        .features, .process-steps, .policies-grid, .contact-info { display: grid; gap: 2rem; margin-top: 3rem; max-width: 100%; }
+        @media (min-width: 1024px) { .features, .process-steps, .policies-grid, .contact-info { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 768px) and (max-width: 1023px) { .features, .process-steps, .policies-grid, .contact-info { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 767px) { .features, .process-steps, .policies-grid, .contact-info { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+        .feature { text-align: center; padding: 2rem; border-radius: 15px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .feature:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #28a745, #1e7e34); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 1.5rem; }
+        .feature h3 { color: #333; margin-bottom: 1rem; font-size: 1.3rem; }
+        .feature p { color: #666; line-height: 1.6; }
+
+        .process-step { background: linear-gradient(145deg, #f8f9fa, #e9ecef); padding: 2rem; border-radius: 15px; text-align: center; position: relative; }
+        .step-number { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #28a745; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        .policy-card { background: linear-gradient(145deg, #f8f9fa, #e9ecef); padding: 2rem; border-radius: 15px; border-left: 4px solid #28a745; }
+        .policy-card h3 { color: #333; margin-bottom: 1rem; }
+
+        .contact-form { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s ease; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #28a745; }
+
+        .submit-btn { background: #28a745; color: white; padding: 12px 30px; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .submit-btn:hover { background: #1e7e34; transform: translateY(-2px); }
+
+        .contact-item { text-align: center; padding: 2rem; background: linear-gradient(145deg, #f8f9fa, #e9ecef); border-radius: 15px; }
+        .contact-icon { width: 50px; height: 50px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 1.2rem; }
+
+        footer { background: #333; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        html { scroll-behavior: smooth; }
+
+        /* scrollbar styling (kept) */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #28a745, #1e7e34); border-radius: 10px; }
+
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 2rem; color: #333; }
+        .section-subtitle { text-align: center; font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto 2rem; }
+
+        /* Skip link (accessible) */
+        .skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+        .skip-link:focus { left: 16px; top: 16px; width: auto; height: auto; background: #fff; padding: 8px 12px; z-index: 1100; border-radius: 4px; color: #333; text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .menu-toggle { display: block; }
+            .nav-links { display: none; position: absolute; top: calc(100% + 8px); right: 16px; flex-direction: column; background: rgba(255,255,255,0.98); padding: 12px; gap: 8px; border-radius: 8px; width: calc(100% - 32px); max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+            .nav-links.active { display: flex; }
+            .nav-links a { padding: 10px 12px; display: block; }
+
+            header { padding: 0.6rem 0; }
+            .logo { font-size: 1.1rem; }
+            main { padding-top: 84px; }
+            .container { padding: 0 16px; }
+            .hero { padding: 2.5rem 0; }
+            .hero h1 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.7rem; }
+            .cta-button { padding: 10px 18px; }
+            .feature { padding: 1.25rem; }
+        }
+		
+		.map-container {
+			position: relative;
+			display: inline-block;
+			cursor: crosshair;
+		}
+
+		.magnifier {
+			position: absolute;
+			border: 3px solid #28a745;
+			border-radius: 50%;
+			cursor: none;
+			width: 150px;
+			height: 150px;
+			pointer-events: none;
+			opacity: 0;
+			transition: opacity 0.2s;
+			background-repeat: no-repeat;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+		}
+
+		.magnifier.active {
+			opacity: 1;
+		}
+
+		@media (hover: none) {
+			.map-container { cursor: default; }
+			.magnifier { display: none; }
+		}
+
+        /* ✅ Force single column on all small screens */
+        @media (max-width: 767px) {
+            .features,
+            .process-steps,
+            .policies-grid,
+            .contact-info {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+        }
+    </style>
+  
+
+    <!-- Google Analytics (kept exactly as provided) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3MFJB5MCLF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);} 
+        gtag('js', new Date());
+        gtag('config', 'G-3MFJB5MCLF');
+    </script>
+
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header>
+        <nav class="container" aria-label="Main navigation">
+            <div class="logo">Shurdington NDP Group</div>
+
+            <!-- Accessible mobile menu toggle -->
+            <button class="menu-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="primary-navigation"
+                    aria-label="Open menu"
+                    onclick="toggleMenu()">
+                ☰
+            </button>
+
+            <ul id="primary-navigation" class="nav-links">
+                <li><a href="#" data-page="home" onclick="showPage('home', event)" class="nav-link active" aria-current="page">Home</a></li>
+                <li><a href="#" data-page="planning" onclick="showPage('planning', event)" class="nav-link">Planning Process</a></li>
+                <li><a href="#" data-page="policies" onclick="showPage('policies', event)" class="nav-link">Policies</a></li>
+                <li><a href="#" data-page="contact" onclick="showPage('contact', event)" class="nav-link">Contact</a></li>
+				<li><a href="newspage.html" class="nav-link active" aria-current="page">News</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main">
+        <!-- HOME PAGE -->
+        <div id="home" class="page active">
+            <section class="hero">
+                <div class="container">
+                    <h1>Shurdington Neighbourhood Development Plan Group.  TEST PAGE</h1>
+                    <p>This is your community group that has been formed to create a Neighbourhood Development Plan.  This plan will guide future development and community growth in Shurdington</p>
+                    <a href="#" onclick="showPage('planning')" class="cta-button">Learn About Neighbourhood Plans</a>
+                </div>
+            </section>
+
+            <section class="content-section construction-bg">
+                <div class="container">
+                    <h2 class="section-title">Who Are We?</h2>
+                    <p class="section-subtitle">
+                        We are a volunteer group dedicated to creating a future vision for Shurdington community. Our role is to create a set of policies that will influence and guide all future planning and development in Shurdington. 
+                        We are engaging with residents, developers, and many stakeholders to shape the future of our local area.    We would love you to be involved too, please contact us if you have opinions or ideas about the future of your community.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <div class="container">
+                    <h2 class="section-title">Our Principles</h2>
+                    <div class="features">
+                        <div class="feature">
+                            <div class="feature-icon">🏗️</div>
+                            <h3>Development of Planning Policies</h3>
+                            <p>Creating legally binding policies that will influence the future development of local services, residential and commercial developments and other issues that Shurdington community needs.</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">📋</div>
+                            <h3>Understanding the Community We Live in Today</h3>
+                            <p>Thorough review of all available information and engagement with our community so we can understand what is of value to us all, and how we can protect and enhance those things.</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🌱</div>
+                            <h3>Having a Vision for the Community We Want to Live In</h3>
+                            <p>Promoting and guiding environmentally responsible community development that balances required growth with the enhancement of the community features that we value most.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+			
+			        
+
+            <section class="content-section">
+				<div class="container">
+					<h2 class="section-title">Our NDP Area</h2>
+					<div style="max-width: 100%; margin: 0 auto; text-align: center;">
+						<div class="map-container" id="mapContainer">
+							<img src="map.jpg" alt="Shurdington area map" id="mapImage" style="width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+							<div class="magnifier" id="magnifier"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+						
+        </div>
+			
+        <!-- PLANNING PROCESS PAGE -->
+        <div id="planning" class="page">
+            <section class="hero">
+                <div class="container">
+                    <h1>Local NDP Process</h1>
+                    <p>Understanding How Neighbourhood Development Plans Work</p>
+                </div>
+            </section>
+
+            <section class="content-section construction-bg">
+                <div class="container">
+                    <h2 class="section-title">How the NDP Process Works</h2>
+                    <p class="section-subtitle">
+                        The NDP process is designed to be transparent, efficient, and inclusive. 
+                        We engage our community throughout each stage.  
+						We welcome your ideas and input.
+                    </p>
+
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-number">1</div>
+                            <h3>Setting up the NDP Group.</h3>
+                            <p>The NDP group was formed in early 2025.  You are welcome to join the NDP Working Group. Please contact us.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">2</div>
+                            <h3>Defining our Community Area.</h3>
+                            <p>Defining and agreeing what is considered as being within Shurdington, and why.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">3</div>
+                            <h3>Public Consultation</h3>
+                            <p>Community engagement period allowing residents and stakeholders to review and comment on initial proposals.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">4</div>
+                            <h3>Assessment</h3>
+                            <p>Technical review by planning experts and legal advisors ensuring policy compliance and appropriate community feedback.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">5</div>
+                            <h3>Decision</h3>
+                            <p>Once the examiner and principal authority have agreed then the The NDP is put to the electorate and a decision is made.  If succesful, the NDP becomes legally binding.</p>
+                        </div>
+                        <div class="process-step">
+                            <div class="step-number">6</div>
+                            <h3>Implementation</h3>
+                            <p>Seeking to ensure that the policies the community have chosen and defined are being implemented by developers and other community and government organisations.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <div class="container">
+                    <h2 class="section-title">Key Considerations</h2>
+                    <div class="features">
+                        <div class="feature">
+                            <div class="feature-icon">🏘️</div>
+                            <h3>Community Impact</h3>
+                            <p>Assessing how developments affect local infrastructure, services, and quality of life for existing residents.</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🌿</div>
+                            <h3>Environmental Factors</h3>
+                            <p>Evaluating environmental impact, sustainability measures, and compliance with conservation requirements.</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🚦</div>
+                            <h3>Infrastructure</h3>
+                            <p>Pursuing adequate transport links, utilities, and public services to support any new development.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+			
+			            <section class="content-section">
+                <div class="container">
+                    <h2 class="section-title">Important Links and Further Information</h2>
+                    <div class="features">
+                        <div class="feature">
+                            <div class="feature-icon">🏘️</div>
+                            <h3>Tewkesbury Council  via Gloucestershire Rural Communities Council (GRCC)</h3>  
+							<p>The initial guidance given to the group by Tewkesbury Council.
+								<a href="https://www.grcc.org.uk/neighbourhood-development-plans" target="_blank" rel="noopener noreferrer"> 
+							<p>	Click here </p></a>
+							</p>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🌿</div>
+                            <h3>Parish Council Sponsorship.</h3>
+                            <p>The NDP Group is supported and funded by Shurdington Parish Council. 
+								<a href="https://www.shurdington-pc.gov.uk" target="_blank" rel="noopener noreferrer"> 
+							<p>	Click here </p></a>
+							</p>
+                        </div>
+                        <div class="feature">
+							<div class="feature-icon">🚦</div>
+							<h3>Central Government Planning Rules Enable Local NDP's</h3>
+							<p>NDP's are part of the National Planning Framework.  
+								<a href="https://www.gov.uk/government/publications/national-planning-policy-framework--2" target="_blank" rel="noopener noreferrer"> 
+							<p>	Click here </p></a>
+							</p>   
+    
+						</div>
+                    </div>
+                </div>
+            </section>	
+        </div>
+
+        <!-- POLICIES PAGE -->
+        <div id="policies" class="page">
+            <section class="hero">
+                <div class="container">
+                    <h1>Our Chosen Local Planning Policies.</h1>
+                    <p>These are the key planning policies that the Shurdington NDP group consider to be the most important for our community.</p>
+                </div>
+            </section>
+
+            <section class="content-section construction-bg">
+                <div class="container">
+                    <h2 class="section-title">Six Current Policy Areas</h2>
+                    <p class="section-subtitle">
+                        These are the key planning policies that the Shurdington NDP group consider to be the most important for our community..
+                    </p>
+
+                    <div class="policies-grid">
+                        <div class="policy-card">
+                            <h3>Housing Development Policy</h3>
+                            <p>Guidelines for residential development including affordable housing requirements, density standards, and design principles to create sustainable communities.</p>
+                            <small><strong>Last Updated:</strong> December 2025</small>
+                        </div>
+                        
+                        <div class="policy-card">
+                            <h3>Environmental Protection Policy</h3>
+                            <p>Requirements for development to recognise environmental impact, protect biodiversity, and incorporate sustainable development practices in all planning applications.</p>
+                            <small><strong>Last Updated:</strong> August 2025</small>
+                        </div>
+                        
+                        <div class="policy-card">
+                            <h3>Transport and Infrastructure Policy</h3>
+                            <p>Ensuring that road safety (including excessive speeding), parking provision, public transport accessibility, and connecting our community are incorporated into planning decsions..</p>
+                            <small><strong>Last Updated:</strong> September 2025</small>
+                        </div>
+                        
+                        <div class="policy-card">
+                            <h3>Design and Heritage Policy</h3>
+                            <p>Ensuring that the importance of the Cotswold National Landscape is recognised by new development. Respecting our heritage and conservation requirements and maintaining local character.</p>
+                            <small><strong>Last Updated:</strong> June 2025</small>
+                        </div>
+                        
+                        <div class="policy-card">
+                            <h3>Development Inclusivity and Enabling Opportunities Policy</h3>
+                            <p>Ensuring that all development presents equal opportunities for all elements of our community whether private, commercial or government.</p>
+                            <small><strong>Last Updated:</strong> September 2025</small>
+                        </div>
+                        
+                        <div class="policy-card">
+                            <h3>Community Facilities Policy</h3>
+                            <p>Recognising requirements for appropriate community infrastructure including schools, healthcare, recreation facilities, and developer contributions.</p>
+                            <small><strong>Last Updated:</strong> August 2025</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+			
+			<section class="content-section">
+				<div class="container">
+					<h2 class="section-title">Policy Documents update</h2>
+				<div class="features">
+
+					<a href="https://www.shurdingtonfuture.org" target="_blank" rel="noopener noreferrer" class="feature-link">
+                <div class="feature">
+                    <div class="feature-icon">📖</div>
+                    <h3>Strategic and Local Plan</h3>
+                    <p>Comprehensive planning strategy outlining development priorities and land use allocations for the local area.</p>
+                </div>
+					</a>
+
+							<a href="https://www.shurdingtonfuture.org" target="_blank" rel="noopener noreferrer" class="feature-link">
+                <div class="feature">
+                    <div class="feature-icon">📄</div>
+                    <h3>Shurdington Community Area</h3>
+                    <p>Here is the map defining the area of Shurdington being used for the NDP. Awaiting link.</p>
+                </div>
+							</a>
+
+							<a href="https://www.shurdingtonfuture.org" target="_blank" rel="noopener noreferrer" class="feature-link">
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Evidence Base</h3>
+                    <p>Research and analysis supporting our policies including housing needs assessments and infrastructure studies.</p>
+                </div>
+							</a>
+
+                            <a href="https://www.shurdingtonfuture.org" target="_blank" rel="noopener noreferrer" class="feature-link">
+                <div class="feature">
+                    <div class="feature-icon">📄</div>
+                    <h3>SURVEY: Shurdington Community </h3>
+                    <p> Awaiting link.</p>
+                </div>
+							</a>
+
+			</div>
+			</div>
+			</section>
+
+            
+        </div>
+
+<!-- CONTACT PAGE -->
+	<div id="contact" class="page">
+		<section class="hero">
+			<div class="container">
+				<h1>Contact Us</h1>
+				<p>Get in touch with our team for guidance and support.  </p>
+			</div>
+		</section>
+        <section class="content-section">
+			<div class="container">
+				<h2 class="section-title">We Are A Volunteer Group</h2>
+				<div class="features">
+					<div class="feature">
+						<div class="feature-icon">🕒</div>
+						<h3>Next Meeting</h3>
+						<p>TBA:  January 2025, <br>
+                             7pm in the Millenium Hall<br>
+						Sobey Suite<br>
+						Shurdington</p>
+					</div>
+					<div class="feature">
+						<div class="feature-icon">💬</div>
+						<h3>NDP Group Chair</h3>
+						<p>John Milroy<br>
+						Please Email shurdingtonnp@gmail.com</p>
+					</div>
+					<div class="feature">
+						<div class="feature-icon">📅</div>
+						<h3>NDP Clerk and Admin Support</h3>
+						<p>Arlene<br>
+						please email arlened726@gmail.com</p>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="content-section construction-bg">
+			<div class="container">
+				<h2 class="section-title">Get In Touch</h2>
+
+				<div class="contact-info">
+
+					<div class="contact-item">
+						
+							<div class="contact-icon">📍</div>
+							<h3>Meet With Us</h3>
+							<p>
+								The steering group are all Shurdington residents.<br>
+								Feel free to contact us in person.   <br>
+                                We are:-  John Milroy, Arlene, Jo, Adrian, <br>
+                                Richard, Jim, Avronne, Matt, Tharsha,<br>
+                                 Stephen, Karen and Rich<br> 
+							</p>
+						
+					</div>
+
+					<div class="contact-item">
+						<a href="https://www.facebook.com/profile.php?id=61560804071078" target="_blank" rel="noopener noreferrer" class="feature-link">
+							<div class="contact-icon">📞</div>
+							<h3>Find us on Facebook</h3>
+							<p><br>Anytime</p>
+						</a>
+					</div>
+
+					<div class="contact-item">
+						<a href="mailto:shurdingtonnp@gmail.com" class="feature-link">
+							<div class="contact-icon">📧</div>
+							<h3>Email Us</h3>
+							<p>
+								shurdingtonnp@gmail.com<br>
+								We will respond as soon<br>
+								as we possibly can
+							</p>
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+		
+	</div>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Shurdington NDP Group.</p>
+        </div>
+    </footer>
+
+    <script>
+	
+		const container = document.getElementById('mapContainer');
+		const img = document.getElementById('mapImage');
+		const magnifier = document.getElementById('magnifier');
+    
+		if (container && img && magnifier) {
+			const zoom = 1.5;
+			magnifier.style.backgroundImage = `url('${img.src}')`;
+        
+			container.addEventListener('mousemove', function(e) {
+				const rect = img.getBoundingClientRect();
+				const x = e.clientX - rect.left;
+				const y = e.clientY - rect.top;
+            
+				if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+					magnifier.classList.add('active');
+                
+					const magnifierRadius = magnifier.offsetWidth / 2;
+					magnifier.style.left = (x - magnifierRadius) + 'px';
+					magnifier.style.top = (y - magnifierRadius) + 'px';
+                
+					const bgPosX = -((x * zoom) - magnifierRadius);
+					const bgPosY = -((y * zoom) - magnifierRadius);
+                
+					magnifier.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+					magnifier.style.backgroundSize = `${rect.width * zoom}px ${rect.height * zoom}px`;
+				} else {
+					magnifier.classList.remove('active');
+				}
+			});
+        
+			container.addEventListener('mouseleave', function() {
+				magnifier.classList.remove('active');
+			});
+		}
+        // Toggle mobile menu: update aria attributes correctly and toggle class on the nav list
+        function toggleMenu() {
+            const nav = document.getElementById('primary-navigation');
+            const button = document.querySelector('.menu-toggle');
+            const expanded = button.getAttribute('aria-expanded') === 'true';
+            const newExpanded = !expanded;
+            button.setAttribute('aria-expanded', String(newExpanded));
+            button.setAttribute('aria-label', newExpanded ? 'Close menu' : 'Open menu');
+            nav.classList.toggle('active');
+        }
+
+        function showPage(pageId, e) {
+            if (e && e.preventDefault) e.preventDefault();
+
+            // Hide all pages, show selected
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) targetPage.classList.add('active');
+
+            // Update navigation active + aria-current
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                const isCurrent = link.getAttribute('data-page') === pageId;
+                link.classList.toggle('active', isCurrent);
+                if (isCurrent) { link.setAttribute('aria-current', 'page'); } else { link.removeAttribute('aria-current'); }
+            });
+
+            // Close mobile menu after selection
+            const nav = document.getElementById('primary-navigation');
+            const button = document.querySelector('.menu-toggle');
+            if (nav.classList.contains('active')) {
+                nav.classList.remove('active');
+                button.setAttribute('aria-expanded', 'false');
+                button.setAttribute('aria-label', 'Open menu');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Header background on scroll (kept)
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Form submission (kept)
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will respond within 2 working days.');
+        });
+
+        // Animation on scroll (kept)
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature, .process-step, .policy-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Allow Escape key to close mobile menu
+        document.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Escape') {
+                const nav = document.getElementById('primary-navigation');
+                const button = document.querySelector('.menu-toggle');
+                if (nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    button.setAttribute('aria-expanded', 'false');
+                    button.setAttribute('aria-label', 'Open menu');
+                    button.focus();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
