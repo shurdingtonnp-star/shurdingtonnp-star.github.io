@@ -5,93 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Links</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0f172a;
-        color: #e2e8f0;
-    }
-
-    header {
-        text-align: center;
-        padding: 30px 20px;
-        font-size: 2rem;
-        font-weight: bold;
-    }
-
-    .controls {
-        max-width: 900px;
-        margin: auto;
-        padding: 10px 20px;
-    }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        font-size: 1rem;
-    }
-
-    .container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
-    }
-
-    .card {
-        background: #1e293b;
-        border-radius: 12px;
-        overflow: hidden;
-        transition: 0.2s;
-    }
-
-    .card:hover {
-        background: #334155;
-        transform: translateY(-3px);
-    }
-
-    .thumb {
-        width: 100%;
-    }
-
-    .content {
-        padding: 15px;
-        text-align: center;
-    }
-
-    a {
-        text-decoration: none;
-        color: #38bdf8;
-        font-weight: bold;
-    }
-
-    footer {
-        text-align: center;
-        padding: 20px;
-        font-size: 0.8rem;
-        color: #94a3b8;
-    }
+body { margin:0; font-family:Arial; background:#0f172a; color:#e2e8f0; }
+header { text-align:center; padding:25px; font-size:2rem; font-weight:bold; }
+h2 { text-align:center; margin-top:30px; }
+.controls { max-width:900px; margin:auto; padding:10px 20px; }
+input { width:100%; padding:10px; border-radius:8px; border:none; }
+.filters { text-align:center; margin-top:10px; }
+button { margin:5px; padding:8px 12px; border:none; border-radius:6px; cursor:pointer; }
+.container { max-width:900px; margin:auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
+.card { background:#1e293b; border-radius:12px; padding:15px; text-align:center; transition:0.2s; }
+.card:hover { background:#334155; transform:translateY(-3px); }
+.thumb { width:100%; border-radius:8px; }
+.icon { font-size:2rem; margin-bottom:10px; }
+a { color:#38bdf8; text-decoration:none; font-weight:bold; }
+.tag { display:inline-block; margin:3px; padding:3px 8px; background:#334155; border-radius:6px; font-size:0.75rem; }
 </style>
 </head>
 <body>
-
 <header>My Links</header>
 
 <div class="controls">
-    <input type="text" id="search" placeholder="Search videos...">
+<input type="text" id="search" placeholder="Search everything...">
+<div class="filters">
+<button onclick="setFilter('ALL')">All</button>
+<button onclick="setFilter('LOCAL')">Local</button>
+<button onclick="setFilter('PUBLIC')">Public</button>
+<button onclick="setFilter('NETWORK')">Network</button>
+</div>
 </div>
 
-<div class="container" id="container"></div>
+<h2>Videos</h2>
+<div class="container" id="videoContainer"></div>
 
-<footer>
-    Auto-generated YouTube Links
-</footer>
+<h2>Applications</h2>
+<div id="appSections"></div>
 
 <script>
+let currentFilter = 'ALL';
+
 const videoIds = [
 "K59DR1-qj0Y","1t7CG2Lc6wE","yJF71qlOHNQ","mY2VyyLwuNk",
 "cI5x_WrO780","6gwyPk4Tce8","uTGGIygVItM","AksbU25e2kw",
@@ -101,61 +52,113 @@ const videoIds = [
 "yj4AW3h1q9I","IbdXer6Jtbk"
 ];
 
-const container = document.getElementById('container');
+const apps = [
+{title:"Docker Hub",url:"https://hub.docker.com/repository/docker/rdalle1/richcloud/general",tags:["PUBLIC"],group:"Docker",icon:"🐳"},
+{title:"GitHub",url:"https://github.com/shurdingtonnp-star/shurdingtonnp-star.github.io/actions",tags:["PUBLIC"],group:"Dev",icon:"💻"},
+{title:"HomeAssistant - local",url:"http://192.168.0.182:8123/lovelace/0",tags:["LOCAL"],group:"Home",icon:"🏠"},
+{title:"HomeAssistant - public",url:"https://richcloudha.duckdns.org/lovelace/0",tags:["PUBLIC"],group:"Home",icon:"🏠"},
+{title:"IT Tools - local",url:"http://192.168.0.67:8088/token-generator",tags:["LOCAL"],group:"Tools",icon:"🧰"},
+{title:"IT-Tools Public",url:"https://richcloudtools.duckdns.org/",tags:["PUBLIC"],group:"Tools",icon:"🧰"},
+{title:"Immich - Public",url:"https://googlephotos.duckdns.org/photos",tags:["PUBLIC"],group:"Media",icon:"📸"},
+{title:"Immich Local",url:"http://192.168.0.3:2283/photos",tags:["LOCAL"],group:"Media",icon:"📸"},
+{title:"MotionEye - local",url:"http://192.168.0.65:8765/",tags:["LOCAL"],group:"Monitoring",icon:"🎥"},
+{title:"N8n",url:"https://richcloudflow.duckdns.org/home/workflows",tags:["PUBLIC"],group:"Automation",icon:"⚙️"},
+{title:"Nginx Proxy Manager",url:"http://192.168.0.182:81/",tags:["LOCAL"],group:"Network",icon:"🌐"},
+{title:"Node-Red",url:"http://192.168.0.3:1880/#flow/f6f2187d.f17ca8",tags:["LOCAL"],group:"Automation",icon:"🔗"},
+{title:"Paperless Local",url:"http://192.168.0.67:8055",tags:["LOCAL"],group:"Docs",icon:"📄"},
+{title:"Paperless Public",url:"http://richcloudpaperless.duckdns.org",tags:["PUBLIC"],group:"Docs",icon:"📄"},
+{title:"Pi hole Backup",url:"http://192.168.0.70/admin/login",tags:["LOCAL","NETWORK"],group:"Network",icon:"🛡️"},
+{title:"Pi-hole",url:"http://192.168.0.62/admin",tags:["LOCAL","NETWORK"],group:"Network",icon:"🛡️"},
+{title:"Portainer 65",url:"https://192.168.0.65:9443/#!/home",tags:["LOCAL"],group:"Docker",icon:"📦"},
+{title:"Portainer 67 A",url:"https://192.168.0.67:9443/#!/3/docker/containers",tags:["LOCAL"],group:"Docker",icon:"📦"},
+{title:"Portainer 67 B",url:"https://192.168.0.67:9443/#!/home",tags:["LOCAL"],group:"Docker",icon:"📦"},
+{title:"Stirling Local",url:"http://192.168.0.65:8080/?lang=en_GB",tags:["LOCAL"],group:"Tools",icon:"🧰"},
+{title:"Stirling-PDF Public",url:"https://richcloudpdf.duckdns.org/?lang=en_GB",tags:["PUBLIC"],group:"Tools",icon:"🧰"},
+{title:"Syncthing 70 local",url:"http://192.168.0.70:8384/",tags:["LOCAL"],group:"Network",icon:"🔄"},
+{title:"Syncthing Local",url:"http://127.0.0.1:8384/",tags:["LOCAL"],group:"Network",icon:"🔄"},
+{title:"Uptime Kuma 2",url:"http://192.168.0.3:3001/dashboard",tags:["LOCAL"],group:"Monitoring",icon:"📊"},
+{title:"Uptime Kuma Main",url:"http://192.168.0.182:3001/dashboard",tags:["LOCAL"],group:"Monitoring",icon:"📊"},
+{title:"Yacht 3",url:"http://192.168.0.3:8000/#/",tags:["LOCAL"],group:"Docker",icon:"⛵"},
+{title:"Google API",url:"https://aistudio.google.com/app/api-keys",tags:["PUBLIC"],group:"Dev",icon:"🔑"},
+{title:"ntfy",url:"https://richcloudntfy.duckdns.org/",tags:["PUBLIC"],group:"Notifications",icon:"🔔"},
+{title:"Yacht 70",url:"http://192.168.0.70:8000/#/apps",tags:["LOCAL"],group:"Docker",icon:"⛵"}
+];
+
+const videoContainer = document.getElementById('videoContainer');
+const appSections = document.getElementById('appSections');
 const searchInput = document.getElementById('search');
 
-let videos = [];
+let videoData = [];
+
+function setFilter(f) {
+    currentFilter = f;
+    render();
+}
 
 async function loadVideos() {
     for (let id of videoIds) {
-        let title = `Video ${id}`;
-
+        let title = id;
         try {
             const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
             const data = await res.json();
             title = data.title;
-        } catch (e) {
-            console.log('Title fetch failed for', id);
-        }
-
-        videos.push({
-            id,
-            title,
-            url: `https://www.youtube.com/watch?v=${id}`,
-            thumb: `https://img.youtube.com/vi/${id}/hqdefault.jpg`
-        });
+        } catch {}
+        videoData.push({ id, title, url:`https://youtube.com/watch?v=${id}`, thumb:`https://img.youtube.com/vi/${id}/hqdefault.jpg` });
     }
-
-    renderVideos(videos);
+    render();
 }
 
-function renderVideos(list) {
-    container.innerHTML = '';
-
-    list.forEach(video => {
-        const card = document.createElement('div');
-        card.className = 'card';
-
-        card.innerHTML = `
-            <img class="thumb" src="${video.thumb}" alt="thumbnail">
-            <div class="content">
-                <p>${video.title}</p>
-                <a href="${video.url}" target="_blank">Watch</a>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-
-searchInput.addEventListener('input', () => {
+function render() {
     const term = searchInput.value.toLowerCase();
-    const filtered = videos.filter(v => v.title.toLowerCase().includes(term));
-    renderVideos(filtered);
-});
+
+    videoContainer.innerHTML = '';
+    appSections.innerHTML = '';
+
+    // videos
+    videoData
+    .filter(v => v.title.toLowerCase().includes(term))
+    .forEach(v => {
+        const el = document.createElement('div');
+        el.className = 'card';
+        el.innerHTML = `<img class="thumb" src="${v.thumb}"><p>${v.title}</p><a href="${v.url}" target="_blank">Watch</a>`;
+        videoContainer.appendChild(el);
+    });
+
+    // group apps
+    const grouped = {};
+
+    apps
+    .filter(a => currentFilter === 'ALL' || a.tags.includes(currentFilter))
+    .filter(a => a.title.toLowerCase().includes(term) || a.tags.join(' ').toLowerCase().includes(term))
+    .forEach(a => {
+        if (!grouped[a.group]) grouped[a.group] = [];
+        grouped[a.group].push(a);
+    });
+
+    for (let group in grouped) {
+        const section = document.createElement('div');
+        section.innerHTML = `<h2>${group}</h2><div class="container"></div>`;
+        const container = section.querySelector('.container');
+
+        grouped[group].forEach(a => {
+            const el = document.createElement('div');
+            el.className = 'card';
+            el.innerHTML = `
+                <div class="icon">${a.icon}</div>
+                <p>${a.title}</p>
+                <a href="${a.url}" target="_blank">Open</a>
+                <div>${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+            `;
+            container.appendChild(el);
+        });
+
+        appSections.appendChild(section);
+    }
+}
+
+searchInput.addEventListener('input', render);
 
 loadVideos();
 </script>
-
 </body>
 </html>
