@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Links</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+    }
+
+    header {
+        text-align: center;
+        padding: 30px 20px;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .controls {
+        max-width: 900px;
+        margin: auto;
+        padding: 10px 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        font-size: 1rem;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .card {
+        background: #1e293b;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: 0.2s;
+    }
+
+    .card:hover {
+        background: #334155;
+        transform: translateY(-3px);
+    }
+
+    .thumb {
+        width: 100%;
+    }
+
+    .content {
+        padding: 15px;
+        text-align: center;
+    }
+
+    a {
+        text-decoration: none;
+        color: #38bdf8;
+        font-weight: bold;
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+</style>
+</head>
+<body>
+
+<header>My Links</header>
+
+<div class="controls">
+    <input type="text" id="search" placeholder="Search videos...">
+</div>
+
+<div class="container" id="container"></div>
+
+<footer>
+    Auto-generated YouTube Links
+</footer>
+
+<script>
+const videoIds = [
+"K59DR1-qj0Y","1t7CG2Lc6wE","yJF71qlOHNQ","mY2VyyLwuNk",
+"cI5x_WrO780","6gwyPk4Tce8","uTGGIygVItM","AksbU25e2kw",
+"rA5jyRLrnNo","BEhkzSIzqEk","5W3AYFFaxtE","kB1-PbaoUn8",
+"I7kJCOBYgR0","5AWVLX5iTAs","8wlipbTlyc8","IkQbyaFv980",
+"oUkpXxdFeU8","JDKXEQj9hcE","xoYP9MVCVm4","qR6AgsofNS8",
+"yj4AW3h1q9I","IbdXer6Jtbk"
+];
+
+const container = document.getElementById('container');
+const searchInput = document.getElementById('search');
+
+let videos = [];
+
+async function loadVideos() {
+    for (let id of videoIds) {
+        let title = `Video ${id}`;
+
+        try {
+            const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
+            const data = await res.json();
+            title = data.title;
+        } catch (e) {
+            console.log('Title fetch failed for', id);
+        }
+
+        videos.push({
+            id,
+            title,
+            url: `https://www.youtube.com/watch?v=${id}`,
+            thumb: `https://img.youtube.com/vi/${id}/hqdefault.jpg`
+        });
+    }
+
+    renderVideos(videos);
+}
+
+function renderVideos(list) {
+    container.innerHTML = '';
+
+    list.forEach(video => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+            <img class="thumb" src="${video.thumb}" alt="thumbnail">
+            <div class="content">
+                <p>${video.title}</p>
+                <a href="${video.url}" target="_blank">Watch</a>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+searchInput.addEventListener('input', () => {
+    const term = searchInput.value.toLowerCase();
+    const filtered = videos.filter(v => v.title.toLowerCase().includes(term));
+    renderVideos(filtered);
+});
+
+loadVideos();
+</script>
+
+</body>
+</html>
