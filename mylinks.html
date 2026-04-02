@@ -34,23 +34,15 @@ a { color:#38bdf8; text-decoration:none; font-weight:bold; }
 </div>
 </div>
 
-<h2>Videos</h2>
-<div class="container" id="videoContainer"></div>
-
 <h2>Applications</h2>
 <div id="appSections"></div>
-
+    
+<h2>Videos</h2>
+<div class="container" id="videoContainer"></div>
+    
 <script>
 let currentFilter = 'ALL';
 
-const videoIds = [
-"K59DR1-qj0Y","1t7CG2Lc6wE","yJF71qlOHNQ","mY2VyyLwuNk",
-"cI5x_WrO780","6gwyPk4Tce8","uTGGIygVItM","AksbU25e2kw",
-"rA5jyRLrnNo","BEhkzSIzqEk","5W3AYFFaxtE","kB1-PbaoUn8",
-"I7kJCOBYgR0","5AWVLX5iTAs","8wlipbTlyc8","IkQbyaFv980",
-"oUkpXxdFeU8","JDKXEQj9hcE","xoYP9MVCVm4","qR6AgsofNS8",
-"yj4AW3h1q9I","IbdXer6Jtbk"
-];
 
 const apps = [
 {title:"Docker Hub",url:"https://hub.docker.com/repository/docker/rdalle1/richcloud/general",tags:["PUBLIC"],group:"Docker",icon:"🐳"},
@@ -86,6 +78,16 @@ const apps = [
 {title:"Yacht 70",url:"http://192.168.0.70:8000/#/apps",tags:["LOCAL"],group:"Docker",icon:"⛵"}
 ];
 
+const videoIds = [
+"K59DR1-qj0Y","1t7CG2Lc6wE","yJF71qlOHNQ","mY2VyyLwuNk",
+"cI5x_WrO780","6gwyPk4Tce8","uTGGIygVItM","AksbU25e2kw",
+"rA5jyRLrnNo","BEhkzSIzqEk","5W3AYFFaxtE","kB1-PbaoUn8",
+"I7kJCOBYgR0","5AWVLX5iTAs","8wlipbTlyc8","IkQbyaFv980",
+"oUkpXxdFeU8","JDKXEQj9hcE","xoYP9MVCVm4","qR6AgsofNS8",
+"yj4AW3h1q9I","IbdXer6Jtbk"
+];
+
+    
 const videoContainer = document.getElementById('videoContainer');
 const appSections = document.getElementById('appSections');
 const searchInput = document.getElementById('search');
